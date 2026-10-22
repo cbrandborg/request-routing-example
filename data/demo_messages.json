@@ -1,0 +1,37 @@
+[
+  {
+    "row": 2129,
+    "text": "I desperately need to change my PIN, but I'm overseas on vacation right now. How can I do this?",
+    "intent": "change_pin",
+    "expected_handling": "auto_reply",
+    "why": "Information request covered by the PIN article (doc_027)."
+  },
+  {
+    "row": 2049,
+    "text": "If I started the Bank transfer from Europe, how long will the process take to complete?",
+    "intent": "transfer_timing",
+    "expected_handling": "auto_reply",
+    "why": "Covered, but doc_008 and doc_028 give different ranges; the reply should not merge them silently."
+  },
+  {
+    "row": 266,
+    "text": "Which fiat currencies do you support?",
+    "intent": "fiat_currency_support",
+    "expected_handling": "human_handoff",
+    "why": "Information request the FAQ does not cover."
+  },
+  {
+    "row": 714,
+    "text": "Cancel my last transfer",
+    "intent": "cancel_transfer",
+    "expected_handling": "action_taken",
+    "why": "Explicit operation; cancelling a transfer needs customer confirmation before it runs."
+  },
+  {
+    "row": 461,
+    "text": "Someone stole my wallet earlier today, not sure exactly when, probably on Piccadilly circus. Can you check if there were any attempts to use the card and obviously block it?",
+    "intent": "lost_or_stolen_card",
+    "expected_handling": "human_handoff",
+    "why": "Block the card immediately (protective action, no confirmation), then escalate urgently so a human checks for misuse."
+  }
+]

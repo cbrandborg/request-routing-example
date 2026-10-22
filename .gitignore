@@ -1,0 +1,24 @@
+# Secrets
+.env
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# Run output (traces, outcome log, handoff queue, audit log): keep the folders, ignore their contents
+runs/**
+!runs/**/
+!runs/**/.gitkeep
+
+# The FAQ corpus is not part of the project: keep the folder, ignore the pages built into it
+data/faq/*
+!data/faq/.gitkeep
+scripts/prepare_faq.py
+
+# Local material that is not part of the project
+private/
+
+.DS_Store
