@@ -47,7 +47,9 @@ def _demo_items() -> list[dict]:
     return json.loads(DEMO_MESSAGES.read_text(encoding="utf-8"))
 
 
-async def run_demo() -> None:
+async def run_demo(concurrency: int, rows: list[int] | None) -> None:
+    """Run the demo messages, optionally only the given Banking77 rows (in that order)."""
+    items = {item["row"]: item for item in _demo_items()}
     dataset = Dataset(
         name="demo",
         cases=[
@@ -56,12 +58,12 @@ async def run_demo() -> None:
                 inputs=item["text"],
                 expected_output=Expected(intent=item["intent"], handling=item["expected_handling"]),
             )
-            for item in _demo_items()
+            for item in (items[row] for row in rows or items)
         ],
         evaluators=[IntentMatches(), HandlingMatches()],
     )
     async with router:  # one bank MCP server for all cases
-        report = await dataset.evaluate(route, max_concurrency=5)
+        report = await dataset.evaluate(route, max_concurrency=concurrency)
     report.print(include_input=True, include_output=True, output_config=RenderValueConfig(value_formatter=_summary))
 
 

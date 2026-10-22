@@ -50,19 +50,20 @@ def follow(directory: Path) -> None:
     """Print one line per finished step of every new trace, as the exporter writes them."""
     console = Console(highlight=False)
     offsets = {path: path.stat().st_size for path in directory.glob("*.jsonl")}  # only show new spans
+    shown = set(offsets)  # traces that already have their separator (or predate the viewer)
     console.print(f"[dim]Following {directory}. Ctrl+C to stop.[/]")
     while True:
         for path in sorted(directory.glob("*.jsonl"), key=lambda p: p.stat().st_mtime):
-            if path not in offsets:
-                console.rule(f"[dim]new message · trace {path.stem[:8]}[/]")
-                offsets[path] = 0
             with path.open("rb") as f:
-                f.seek(offsets[path])
+                f.seek(offsets.get(path, 0))
                 chunk = f.read()
             complete = chunk[: chunk.rfind(b"\n") + 1]
-            offsets[path] += len(complete)
+            offsets[path] = offsets.get(path, 0) + len(complete)
             for line in complete.decode("utf-8").splitlines():
                 if text := _describe(json.loads(line)):
+                    if path not in shown:  # traces without agent steps (e.g. MCP connection setup) get no separator
+                        console.rule(f"[dim]new message · trace {path.stem[:8]}[/]")
+                        shown.add(path)
                     console.print(text)
         time.sleep(0.2)
 
